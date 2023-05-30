@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:wanflutter/module/home/page/home_page.dart';
+import 'package:wanflutter/module/mine/page/mine_page.dart';
+import 'package:wanflutter/module/project/page/project_page.dart';
+import 'package:wanflutter/module/system/page/system_page.dart';
 
 void main() => runApp(const EntryApp());
 
@@ -11,11 +15,27 @@ class EntryApp extends StatefulWidget {
 
 class _EntryAppState extends State<EntryApp> {
   int _selectedIndex = 0;
+  late PageController _pageController;
+
+  final pages = <Widget>[
+    const HomePage(),
+    const SystemPage(),
+    const ProjectPage(),
+    const MinePage(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _pageController.jumpToPage(index);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController =
+        PageController(initialPage: _selectedIndex, keepPage: true);
   }
 
   @override
@@ -25,8 +45,9 @@ class _EntryAppState extends State<EntryApp> {
         appBar: AppBar(
           title: const Text('WanFlutter'),
         ),
-        body: const Center(
-          child: Text('Content'),
+        body: PageView(
+          controller: _pageController,
+          children: pages,
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed, // 固定每个选项的宽度和位置
