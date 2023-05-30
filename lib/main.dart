@@ -47,6 +47,7 @@ class _EntryAppState extends State<EntryApp> {
         ),
         body: PageView(
           controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(), // 禁止左右滑动
           children: pages,
         ),
         bottomNavigationBar: BottomNavigationBar(

@@ -4,11 +4,24 @@ import 'package:wanflutter/module/base/base_page.dart';
 ///
 /// “体系”页面
 ///
-class SystemPage extends BaseStatefulPage {
-  const SystemPage({super.key}) : super(title: "体系");
+class SystemPage extends StatefulWidget {
+  const SystemPage({super.key});
 
   @override
-  Widget buildBody() {
-    return const Text("体系");
+  State<StatefulWidget> createState() {
+    return SystemState();
+  }
+}
+
+class SystemState extends State<SystemPage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return const Center(
+      child: Text("体系"),
+    );
   }
 }
