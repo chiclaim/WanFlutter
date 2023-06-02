@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:wanflutter/module/base/base_page.dart';
+import 'package:wanflutter/module/home/api/home_api.dart';
 
 ///
 /// 首页
@@ -20,6 +20,9 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    HomeApi().requestArticleList(0);
+
     return const Center(
       child: Text("首页"),
     );

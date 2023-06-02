@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:wanflutter/module/base/base_page.dart';
+import 'package:wanflutter/module/base/constants.dart';
 
 ///
 /// “我的” 页面
@@ -20,6 +20,7 @@ class MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    if (debug) print("init ${runtimeType.toString()}");
     return const Center(
       child: Text("首页"),
     );
