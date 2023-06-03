@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:wanflutter/module/base/bean/article_bean.dart';
+import 'package:wanflutter/module/base/bean/paging_bean.dart';
 import 'package:wanflutter/module/home/api/home_api.dart';
 
 ///
@@ -16,23 +18,31 @@ class HomePage extends StatefulWidget {
 class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  final List<Article> _list = [];
 
-  dynamic data;
+  void fetchHomeArticleList() async {
+    final result = await HomeApi().requestArticleList(0);
+    if (result.ok) {
+      _list.clear();
+      final datas = Paging.fromJson(result.data).datas;
+      if (datas != null) _list.addAll(datas);
+    }
+    setState(() {});
+  }
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    // final result = await HomeApi().requestArticleList(0);
-    // setState(() {
-    //   data = "1221";
-    // });
+    fetchHomeArticleList();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return const Center(
-      child: Text("12121"),
-    );
+    return ListView.builder(
+        itemCount: _list.length,
+        itemBuilder: (context, index) {
+          return Text(_list[index].title ?? "");
+        });
   }
 }

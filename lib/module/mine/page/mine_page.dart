@@ -22,7 +22,7 @@ class MineState extends State<MinePage> with AutomaticKeepAliveClientMixin {
     super.build(context);
     if (debug) print("init ${runtimeType.toString()}");
     return const Center(
-      child: Text("首页"),
+      child: Text("我的"),
     );
   }
 }

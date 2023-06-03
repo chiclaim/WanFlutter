@@ -34,13 +34,14 @@ class WanBaseUrl implements BaseUrl {
 
   @override
   Future parseData(responseData) async {
-    Map<String, dynamic> result = jsonDecode(responseData);
+    //Map<String, dynamic> result = jsonDecode(responseData);
+    Map<String, dynamic> result = responseData;
     final errorCode = result["errorCode"];
     final errorMsg = result["errorMsg"];
     final data = result["data"];
     return ResponseResult(
         ok: errorCode == 0,
-        errorCode: errorCode,
+        errorCode: (errorCode != null) ? errorCode.toString() : null,
         errorMsg: errorMsg,
         data: data);
   }
