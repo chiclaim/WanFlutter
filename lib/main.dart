@@ -43,7 +43,7 @@ class _EntryAppState extends State<EntryApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('WanFlutter'),
+          title: const Text('WanAndroid'),
         ),
         body: PageView(
           controller: _pageController,
