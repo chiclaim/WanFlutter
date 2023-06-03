@@ -17,14 +17,22 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  dynamic data;
+
+  @override
+  void initState() async {
+    super.initState();
+    // final result = await HomeApi().requestArticleList(0);
+    // setState(() {
+    //   data = "1221";
+    // });
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
-    HomeApi().requestArticleList(0);
-
     return const Center(
-      child: Text("首页"),
+      child: Text("12121"),
     );
   }
 }
