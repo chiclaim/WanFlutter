@@ -74,7 +74,7 @@ class DioNetwork implements INetwork {
   }
 
   @override
-  String humanizeNetworkErorr(Exception exception) {
+  String humanizeNetworkError(Exception exception) {
     if (exception is DioError) {
       switch (exception.type) {
         case DioErrorType.connectionError:

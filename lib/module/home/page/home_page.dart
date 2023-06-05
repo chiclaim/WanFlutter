@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:wanflutter/module/base/bean/article_bean.dart';
 import 'package:wanflutter/module/base/bean/paging_bean.dart';
 import 'package:wanflutter/module/home/api/home_api.dart';
@@ -24,8 +25,8 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     final result = await HomeApi().requestArticleList(0);
     if (result.ok) {
       _list.clear();
-      final datas = Paging.fromJson(result.data).datas;
-      if (datas != null) _list.addAll(datas);
+      final dataList = Paging.fromJson(result.data).datas;
+      if (dataList != null) _list.addAll(dataList);
     }
     setState(() {});
   }
@@ -39,10 +40,85 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.builder(
-        itemCount: _list.length,
-        itemBuilder: (context, index) {
-          return Text(_list[index].title ?? "");
-        });
+    return Container(
+      color: const Color(0xFFF4F5F7),
+      child: ListView.builder(
+          itemCount: _list.length,
+          itemBuilder: (context, index) {
+            return _buildItem(index);
+          }),
+    );
+  }
+
+  List<Widget> _buildTags(Article article) {
+    final tags = [];
+    if (article.chapterName?.isNotEmpty == true) {
+      tags.add(article.chapterName!);
+    }
+    tags.addAll(article.tags?.map((e) => e.name).toList() ?? []);
+    return tags
+        .map((e) => Container(
+            margin: const EdgeInsets.only(right: 5),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: const Color(0xFFE9E9EB),
+                width: 1.0,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 3, right: 3, bottom: 1.5),
+              child: Text(
+                e,
+                style: const TextStyle(
+                  color: Color(0xFF9D9D9F),
+                  fontSize: 12.0,
+                ),
+              ),
+            )))
+        .toList();
+  }
+
+  Widget _buildItem(int index) {
+    final Article article = _list.elementAt(index);
+    return Container(
+      color: Colors.white,
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            article.title ?? "",
+            style: const TextStyle(fontSize: 18, color: Color(0xFF3D3D3D)),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            child: Row(
+              children: [
+                Text(
+                  article.author?.isNotEmpty == true ? article.author! : "佚名",
+                  style:
+                      const TextStyle(fontSize: 14, color: Color(0xFF69686E)),
+                ),
+                const Text(
+                  " | ",
+                  style: TextStyle(fontSize: 14, color: Color(0xFFE9E9EB)),
+                ),
+                Text(
+                  article.niceDate ?? "",
+                  style:
+                      const TextStyle(fontSize: 14, color: Color(0xFF9D9D9F)),
+                ),
+              ],
+            ),
+          ),
+          Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: _buildTags(article),
+              ))
+        ],
+      ),
+    );
   }
 }

@@ -14,8 +14,6 @@ abstract class BaseUrl {
   /// 解析 baseUrl 对应的数据格式
   Future<dynamic> parseData(dynamic responseData);
 
-  /// wanandroid.com open api
-  static const wan = WanBaseUrl();
 }
 
 class WanBaseUrl implements BaseUrl {

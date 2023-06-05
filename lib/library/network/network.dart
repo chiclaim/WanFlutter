@@ -12,7 +12,7 @@ abstract class INetwork {
   void download();
 
   // 网络错误信息转成用户可理解的信息
-  String humanizeNetworkErorr(Exception exception);
+  String humanizeNetworkError(Exception exception);
 
   
 }
