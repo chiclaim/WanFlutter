@@ -45,7 +45,18 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       child: ListView.builder(
           itemCount: _list.length,
           itemBuilder: (context, index) {
-            return _buildItem(index);
+            return GestureDetector(
+                onTap: () {
+                  final article = _list.elementAt(index);
+                  if (article.link == null) return;
+
+                  Navigator.pushNamed(
+                      context, "wan-flutter://article_detail_page", arguments: {
+                    "url": _list.elementAt(index).link,
+                    "title": article.title
+                  });
+                },
+                child: _buildItem(index));
           }),
     );
   }
@@ -92,31 +103,61 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
             style: const TextStyle(fontSize: 18, color: Color(0xFF3D3D3D)),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 10),
-            child: Row(
-              children: [
-                Text(
-                  article.author?.isNotEmpty == true ? article.author! : "佚名",
-                  style:
-                      const TextStyle(fontSize: 14, color: Color(0xFF69686E)),
-                ),
-                const Text(
-                  " | ",
-                  style: TextStyle(fontSize: 14, color: Color(0xFFE9E9EB)),
-                ),
-                Text(
-                  article.niceDate ?? "",
-                  style:
-                      const TextStyle(fontSize: 14, color: Color(0xFF9D9D9F)),
-                ),
-              ],
-            ),
-          ),
-          Container(
               margin: const EdgeInsets.only(top: 10),
               child: Row(
-                children: _buildTags(article),
-              ))
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 作者，时间
+                          Container(
+                            margin: const EdgeInsets.only(top: 0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  article.author?.isNotEmpty == true
+                                      ? article.author!
+                                      : "佚名",
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Color(0xFF69686E)),
+                                ),
+                                const Text(
+                                  " | ",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Color(0xFFE9E9EB)),
+                                ),
+                                Text(
+                                  article.niceDate ?? "",
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Color(0xFF9D9D9F)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // 标签
+                          Container(
+                              alignment: Alignment.centerLeft,
+                              margin: const EdgeInsets.only(top: 10),
+                              child: Row(
+                                children: _buildTags(article),
+                              )),
+                        ]),
+                    // 收藏按钮
+                    Container(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          color: article.collect == true
+                              ? Colors.blue[200]
+                              : const Color(0xFF9D9D9F).withOpacity(0.5),
+                          icon: article.collect == true
+                              ? const Icon(Icons.favorite)
+                              : const Icon(Icons.favorite_border),
+                          onPressed: () {
+                            // 处理收藏按钮点击事件
+                          },
+                        ))
+                  ]))
         ],
       ),
     );
