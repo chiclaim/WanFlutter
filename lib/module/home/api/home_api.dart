@@ -5,6 +5,7 @@ import 'package:wanflutter/module/base/network/response_result.dart';
 class HomeApi {
   Future<ResponseResult> requestArticleList(int index,
       {int pageSize = 20}) async {
-    return await HttpClient.request(RequestOption("/article/list/$index/json"));
+    return await HttpClient.request(RequestOption("/article/list/$index/json",
+        queryParameters: {"page_size": pageSize}));
   }
 }

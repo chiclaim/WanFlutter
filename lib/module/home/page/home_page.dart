@@ -20,21 +20,56 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   final List<Article> _list = [];
+  final ScrollController _scrollController = ScrollController();
+  bool isLoading = false;
 
-  void fetchHomeArticleList() async {
-    final result = await HomeApi().requestArticleList(0);
-    if (result.ok) {
-      _list.clear();
-      final dataList = Paging.fromJson(result.data).datas;
-      if (dataList != null) _list.addAll(dataList);
+  /// 页码从0开始
+  int _pageIndex = 0;
+
+  /// 总记录数
+  int total = -1;
+
+  /// 每页加载条数[1-40]
+  static const int defaultPageSize = 30;
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !isLoading &&
+        total != _list.length) {
+      fetchHomeArticleList(pageIndex: ++_pageIndex);
     }
-    setState(() {});
+  }
+
+  void fetchHomeArticleList(
+      {required int pageIndex, int pageSize = defaultPageSize}) async {
+    setState(() {
+      isLoading = true;
+    });
+    final result =
+        await HomeApi().requestArticleList(pageIndex, pageSize: pageSize);
+    if (result.ok) {
+      if (pageIndex == 0) {
+        _list.clear();
+      }
+      final paging = Paging.fromJson(result.data);
+      total = paging.total ?? -1;
+      final dataList = paging.datas;
+      if (dataList != null) _list.addAll(dataList);
+    } else {
+      // 请求失败
+      _pageIndex--;
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    fetchHomeArticleList();
+    _scrollController.addListener(_scrollListener);
+    fetchHomeArticleList(pageIndex: _pageIndex);
   }
 
   @override
@@ -43,20 +78,47 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     return Container(
       color: const Color(0xFFF4F5F7),
       child: ListView.builder(
-          itemCount: _list.length,
+          controller: _scrollController,
+          itemCount: _list.length + 1,
           itemBuilder: (context, index) {
-            return GestureDetector(
-                onTap: () {
-                  final article = _list.elementAt(index);
-                  if (article.link == null) return;
+            print("$index -- ${_list.length}");
+            if (index < _list.length) {
+              return GestureDetector(
+                  onTap: () {
+                    final article = _list.elementAt(index);
+                    if (article.link == null) return;
 
-                  Navigator.pushNamed(
-                      context, "wan-flutter://article_detail_page", arguments: {
-                    "url": _list.elementAt(index).link,
-                    "title": article.title
-                  });
-                },
-                child: _buildItem(index));
+                    Navigator.pushNamed(
+                        context, "wan-flutter://article_detail_page",
+                        arguments: {
+                          "url": _list.elementAt(index).link,
+                          "title": article.title
+                        });
+                  },
+                  child: _buildItem(index));
+            } else {
+              // 所有数据加载完毕
+              if (index == _list.length && total == _list.length) {
+                return const SizedBox(
+                  height: 50,
+                  width: double.infinity,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '~我是有底线的~',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                );
+              } else {
+                return const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            }
           }),
     );
   }

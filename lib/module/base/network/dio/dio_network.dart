@@ -38,7 +38,9 @@ class DioNetwork implements INetwork {
     switch (requestOption.method) {
       case Method.get:
         return convertResponse<T>(
-            requestOption, await _dio.get(requestOption.path));
+            requestOption,
+            await _dio.get(requestOption.path,
+                queryParameters: requestOption.queryParameters));
       case Method.post:
         return convertResponse<T>(
             requestOption, await _dio.post(requestOption.path));

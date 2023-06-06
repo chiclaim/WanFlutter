@@ -38,6 +38,7 @@ class RequestOption {
       this.connectTimeout,
       this.receiveTimeout,
       this.contentType,
+      this.queryParameters,
       this.data,
       this.extra});
 }
