@@ -21,7 +21,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
   final List<Article> _list = [];
   final ScrollController _scrollController = ScrollController();
-  bool isLoading = false;
+  bool _isLoading = false;
 
   /// 页码从0开始
   int _pageIndex = 0;
@@ -35,7 +35,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   void _scrollListener() {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
-        !isLoading &&
+        !_isLoading &&
         total != _list.length) {
       fetchHomeArticleList(pageIndex: ++_pageIndex);
     }
@@ -44,7 +44,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   void fetchHomeArticleList(
       {required int pageIndex, int pageSize = defaultPageSize}) async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
     final result =
         await HomeApi().requestArticleList(pageIndex, pageSize: pageSize);
@@ -61,7 +61,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       _pageIndex--;
     }
     setState(() {
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
