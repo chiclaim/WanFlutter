@@ -21,6 +21,9 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
     return Scaffold(
       appBar: AppBar(title: Text(title ?? "")),
       body: WebView(
+        javascriptMode: url.contains("weixin")
+            ? JavascriptMode.unrestricted
+            : JavascriptMode.disabled,
         initialUrl: url,
       ),
     );
