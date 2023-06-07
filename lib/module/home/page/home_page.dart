@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wanflutter/module/base/bean/article_bean.dart';
 import 'package:wanflutter/module/base/bean/paging_bean.dart';
 import 'package:wanflutter/module/home/api/home_api.dart';
+import 'package:wanflutter/module/home/bean/home_top_bean.dart';
 
 ///
 /// 首页
@@ -19,9 +20,12 @@ class HomePage extends StatefulWidget {
 class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<Article> _list = [];
+  final List<Object> _list = [];
+  HomeTopBean? _homeTopBean;
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
+
+  late HomeApi _homeApi;
 
   /// 页码从0开始
   int _pageIndex = 0;
@@ -41,16 +45,36 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     }
   }
 
+  fetchHomeTop() async {
+    final bannerResult = await _homeApi.requestBanner();
+    if (!bannerResult.ok) {
+      // todo 提示错误
+      return;
+    }
+    final topResult = await _homeApi.requestTop();
+    if (!topResult.ok) {
+      // todo 提示错误
+      return;
+    }
+    _homeTopBean = HomeTopBean.fromJson(topResult.data, bannerResult.data);
+    setState(() {
+      _list.insert(0, _homeTopBean!);
+    });
+  }
+
   void fetchHomeArticleList(
       {required int pageIndex, int pageSize = defaultPageSize}) async {
     setState(() {
       _isLoading = true;
     });
     final result =
-        await HomeApi().requestArticleList(pageIndex, pageSize: pageSize);
+        await _homeApi.requestArticleList(pageIndex, pageSize: pageSize);
     if (result.ok) {
       if (pageIndex == 0) {
         _list.clear();
+      }
+      if (_homeTopBean == null) {
+        fetchHomeTop();
       }
       final paging = Paging.fromJson(result.data);
       total = paging.total ?? -1;
@@ -68,6 +92,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
+    _homeApi = HomeApi();
     _scrollController.addListener(_scrollListener);
     fetchHomeArticleList(pageIndex: _pageIndex);
   }
@@ -81,22 +106,8 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
           controller: _scrollController,
           itemCount: _list.length + 1,
           itemBuilder: (context, index) {
-            print("$index -- ${_list.length}");
-            if (index < _list.length) {
-              return GestureDetector(
-                  onTap: () {
-                    final article = _list.elementAt(index);
-                    if (article.link == null) return;
-
-                    Navigator.pushNamed(
-                        context, "wan-flutter://article_detail_page",
-                        arguments: {
-                          "url": _list.elementAt(index).link,
-                          "title": article.title
-                        });
-                  },
-                  child: _buildItem(index));
-            } else {
+            // 底部
+            if (index == _list.length) {
               // 所有数据加载完毕
               if (index == _list.length && total == _list.length) {
                 return const SizedBox(
@@ -118,9 +129,82 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
                   ),
                 );
               }
+            } else {
+              final bean = _list.elementAt(index);
+              if (bean is Article) {
+                return GestureDetector(
+                    onTap: () {
+                      if (bean.link == null) return;
+                      Navigator.pushNamed(
+                          context, "wan-flutter://article_detail_page",
+                          arguments: {"url": bean.link, "title": bean.title});
+                    },
+                    child: _buildItem(bean));
+              } else if (bean is HomeTopBean) {
+                return buildTopItem(bean);
+              } else {
+                return const Text("Unknown data");
+              }
             }
           }),
     );
+  }
+
+  Widget buildTopItem(HomeTopBean bean) {
+    return Container(
+      color: Colors.white,
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: _buildTopItemContent(bean),
+      ),
+    );
+  }
+
+  Widget _buildTopRow(int index, String? title, String? link) {
+    return Container(
+        margin: const EdgeInsets.only(top: 10),
+        child: Row(
+          children: [
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Center(
+                child: Text(
+                  "$index",
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+            ),
+            Expanded(
+                child: Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      title ?? "",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: const TextStyle(
+                          fontSize: 16, color: Color(0xFF3D3D3D)),
+                    )))
+          ],
+        ));
+  }
+
+  List<Widget> _buildTopItemContent(HomeTopBean bean) {
+    List<Widget> list = [];
+    int index = 0;
+    bean.tops?.forEach((element) {
+      list.add(_buildTopRow(++index, element.title, element.link));
+    });
+    bean.banners?.forEach((element) {
+      list.add(_buildTopRow(++index, element.title, element.url));
+    });
+    return list;
   }
 
   List<Widget> _buildTags(Article article) {
@@ -151,8 +235,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
         .toList();
   }
 
-  Widget _buildItem(int index) {
-    final Article article = _list.elementAt(index);
+  Widget _buildItem(Article article) {
     return Container(
       color: Colors.white,
       margin: const EdgeInsets.only(top: 10),
