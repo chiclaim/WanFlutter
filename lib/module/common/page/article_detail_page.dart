@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wanflutter/library/utils/launch_utils.dart';
 import 'package:wanflutter/library/utils/toast_utils.dart';
@@ -70,8 +71,8 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
               leading: const Icon(Icons.share),
               title: const Text('分享'),
               onTap: () {
-                // 处理分享逻辑
                 Navigator.pop(context);
+                Share.share(url, subject: title ?? "");
               },
             ),
             ListTile(
