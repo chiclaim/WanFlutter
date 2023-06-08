@@ -31,15 +31,17 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
         backgroundColor: mainColor,
         elevation: 0.5,
         actions: [
-            IconButton(
-              icon: const Icon(
-                Icons.more_horiz,
-                color: titleColor,
-              ),
-              tooltip: "更多",
-              onPressed: () {},
+          IconButton(
+            icon: const Icon(
+              Icons.more_horiz,
+              color: titleColor,
             ),
-          ],
+            tooltip: "更多",
+            onPressed: () {
+              showBottomSheet();
+            },
+          ),
+        ],
       ),
       body: WebView(
         javascriptMode: url.contains("weixin")
@@ -47,6 +49,52 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
             : JavascriptMode.disabled,
         initialUrl: url,
       ),
+    );
+  }
+
+  void showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.share),
+              title: const Text('分享'),
+              onTap: () {
+                // 处理分享逻辑
+                Navigator.pop(context); // 关闭底部弹窗
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.favorite),
+              title: const Text('收藏'),
+              onTap: () {
+                // 处理收藏逻辑
+                Navigator.pop(context); // 关闭底部弹窗
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.copy),
+              title: const Text('复制链接'),
+              onTap: () {
+                // 处理复制链接逻辑
+                Navigator.pop(context); // 关闭底部弹窗
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.open_in_browser),
+              title: const Text('浏览器打开'),
+              onTap: () {
+                // 处理浏览器打开逻辑
+                Navigator.pop(context); // 关闭底部弹窗
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
