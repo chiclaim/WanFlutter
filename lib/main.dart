@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:wanflutter/module/base/constants.dart';
 import 'package:wanflutter/module/common/page/article_detail_page.dart';
 import 'package:wanflutter/module/home/page/home_page.dart';
 import 'package:wanflutter/module/mine/page/mine_page.dart';
@@ -57,10 +59,35 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 设置状态栏的颜色
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: mainColor,
+    ));
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WanAndroid'),
-      ),
+          title: const Text(
+            'WanAndroid',
+            style: TextStyle(color: titleColor),
+          ),
+          backgroundColor: mainColor,
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.search,
+                color: Colors.grey,
+              ),
+              tooltip: "搜索",
+              onPressed: () {},
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1.0),
+            child: Container(
+              color: const Color(0xFFF2F2F2),
+              height: 1.0,
+            ),
+          )),
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(), // 禁止左右滑动
@@ -72,7 +99,7 @@ class _MainPageState extends State<MainPage> {
         showSelectedLabels: true, // 显示选中项的文本标签
         showUnselectedLabels: true, // 显示未选中项的文本标签
         backgroundColor: Colors.white, // 设置底部导航栏的背景色
-        selectedItemColor: Colors.blue, // 设置选中项的颜色
+        selectedItemColor: waterBlue, // 设置选中项的颜色
         unselectedItemColor: Colors.grey, // 设置未选中项的颜色
         elevation: 8, // 设置底部导航栏的阴影效果
         items: const <BottomNavigationBarItem>[
