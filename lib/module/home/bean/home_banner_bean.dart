@@ -1,4 +1,4 @@
-class Banner {
+class HomeBanner {
   String? desc;
   int? id;
   String? imagePath;
@@ -8,9 +8,9 @@ class Banner {
   int? type;
   String? url;
 
-  Banner({desc, id, imagePath, isVisible, order, title, type, url});
+  HomeBanner({desc, id, imagePath, isVisible, order, title, type, url});
 
-  Banner.fromJson(Map<String, dynamic> json) {
+  HomeBanner.fromJson(Map<String, dynamic> json) {
     desc = json['desc'];
     id = json['id'];
     imagePath = json['imagePath'];

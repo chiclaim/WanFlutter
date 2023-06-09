@@ -1,9 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:wanflutter/library/utils/toast_utils.dart';
 import 'package:wanflutter/module/base/bean/article_bean.dart';
 import 'package:wanflutter/module/base/bean/paging_bean.dart';
+import 'package:wanflutter/module/base/constants.dart';
 import 'package:wanflutter/module/home/api/home_api.dart';
+import 'package:wanflutter/module/home/bean/home_banner_bean.dart';
 import 'package:wanflutter/module/home/bean/home_top_bean.dart';
 
 ///
@@ -22,7 +24,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   final List<Object> _list = [];
-  HomeTopBean? _homeTopBean;
+  List<HomeBanner>? _bannerList;
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
 
@@ -52,15 +54,21 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       ToastUtils.show(msg: bannerResult.errorMsg ?? "");
       return;
     }
-    final topResult = await _homeApi.requestTop();
-    if (!topResult.ok) {
-      ToastUtils.show(msg: bannerResult.errorMsg ?? "");
-      return;
+    final bannerData = bannerResult.data;
+    if (bannerData != null && bannerData.isNotEmpty) {
+      _bannerList = HomeTopBean.fromJson(null, bannerResult.data).banners;
+      _list.insert(0, _bannerList!);
     }
-    _homeTopBean = HomeTopBean.fromJson(topResult.data, bannerResult.data);
-    setState(() {
-      _list.insert(0, _homeTopBean!);
-    });
+    // final topResult = await _homeApi.requestTop();
+    // if (!topResult.ok) {
+    // ToastUtils.show(msg: bannerResult.errorMsg ?? "");
+    // return;
+    // }
+    // _homeTopBean = HomeTopBean.fromJson(topResult.data, bannerResult.data);
+    // 如果文章列表有数据则刷新
+    if (_list.isNotEmpty) {
+      setState(() {});
+    }
   }
 
   void fetchHomeArticleList(
@@ -74,7 +82,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       if (pageIndex == 0) {
         _list.clear();
       }
-      if (_homeTopBean == null) {
+      if (_bannerList == null || _bannerList!.isEmpty) {
         fetchHomeTop();
       }
       final paging = Paging.fromJson(result.data);
@@ -101,53 +109,79 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(
-      color: const Color(0xFFF4F5F7),
-      child: ListView.builder(
-          controller: _scrollController,
-          itemCount: _list.length + 1,
-          itemBuilder: (context, index) {
-            // 底部
-            if (index == _list.length) {
-              // 所有数据加载完毕
-              if (index == _list.length && total == _list.length) {
-                return const SizedBox(
-                  height: 50,
-                  width: double.infinity,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '~我是有底线的~',
-                      style: TextStyle(fontSize: 14),
+    return Scaffold(
+      appBar: AppBar(
+          title: const Text(
+            'WanAndroid',
+            style: TextStyle(color: titleColor),
+          ),
+          backgroundColor: mainColor,
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.search,
+                color: Colors.grey,
+              ),
+              tooltip: "搜索",
+              onPressed: () {},
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1.0),
+            child: Container(
+              color: const Color(0xFFF2F2F2),
+              height: 1.0,
+            ),
+          )),
+      body: Container(
+        color: const Color(0xFFF4F5F7),
+        child: ListView.builder(
+            controller: _scrollController,
+            itemCount: _list.length + 1,
+            itemBuilder: (context, index) {
+              // 底部
+              if (index == _list.length) {
+                // 所有数据加载完毕
+                if (index == _list.length && total == _list.length) {
+                  return const SizedBox(
+                    height: 50,
+                    width: double.infinity,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '~我是有底线的~',
+                        style: TextStyle(fontSize: 14),
+                      ),
                     ),
-                  ),
-                );
+                  );
+                } else {
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
               } else {
-                return const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
+                final bean = _list.elementAt(index);
+                if (bean is Article) {
+                  return GestureDetector(
+                      onTap: () {
+                        if (bean.link == null) return;
+                        Navigator.pushNamed(
+                            context, "wan-flutter://article_detail_page",
+                            arguments: {"url": bean.link, "title": bean.title});
+                      },
+                      child: _buildItem(bean));
+                } else if (bean is List<HomeBanner>) {
+                  return buildTopSlider(bean);
+                } else {
+                  return const Text("Unknown data");
+                }
               }
-            } else {
-              final bean = _list.elementAt(index);
-              if (bean is Article) {
-                return GestureDetector(
-                    onTap: () {
-                      if (bean.link == null) return;
-                      Navigator.pushNamed(
-                          context, "wan-flutter://article_detail_page",
-                          arguments: {"url": bean.link, "title": bean.title});
-                    },
-                    child: _buildItem(bean));
-              } else if (bean is HomeTopBean) {
-                return buildTopItem(bean);
-              } else {
-                return const Text("Unknown data");
-              }
-            }
-          }),
+            }),
+      ),
     );
   }
 
@@ -160,6 +194,34 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: _buildTopItemContent(bean),
       ),
+    );
+  }
+
+  Widget buildTopSlider(List<HomeBanner> banners) {
+    return CarouselSlider(
+      options: CarouselOptions(
+          height: 200,
+          autoPlay: true,
+          enlargeFactor: 1.0,
+          aspectRatio: 9 / 5,
+          autoPlayCurve: Curves.fastOutSlowIn,
+          enableInfiniteScroll: true,
+          viewportFraction: 1.2,
+          autoPlayInterval: const Duration(seconds: 5)),
+      items: banners.map((banner) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              child: Image.network(
+                banner.imagePath ?? "",
+                fit: BoxFit.cover,
+              ),
+            );
+          },
+        );
+      }).toList(),
     );
   }
 

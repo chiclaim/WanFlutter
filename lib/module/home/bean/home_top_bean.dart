@@ -3,12 +3,12 @@ import 'package:wanflutter/module/home/bean/top_bean.dart';
 
 class HomeTopBean {
   List<Top>? tops;
-  List<Banner>? banners;
+  List<HomeBanner>? banners;
 
   HomeTopBean({this.tops, this.banners});
 
   HomeTopBean.fromJson(List<dynamic>? topData, List<dynamic>? bannerData) {
     tops = topData?.map((e) => Top.fromJson(e)).toList();
-    banners = bannerData?.map((e) => Banner.fromJson(e)).toList();
+    banners = bannerData?.map((e) => HomeBanner.fromJson(e)).toList();
   }
 }

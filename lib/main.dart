@@ -64,30 +64,6 @@ class _MainPageState extends State<MainPage> {
       statusBarColor: mainColor,
     ));
     return Scaffold(
-      appBar: AppBar(
-          title: const Text(
-            'WanAndroid',
-            style: TextStyle(color: titleColor),
-          ),
-          backgroundColor: mainColor,
-          elevation: 0,
-          actions: [
-            IconButton(
-              icon: const Icon(
-                Icons.search,
-                color: Colors.grey,
-              ),
-              tooltip: "搜索",
-              onPressed: () {},
-            ),
-          ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1.0),
-            child: Container(
-              color: const Color(0xFFF2F2F2),
-              height: 1.0,
-            ),
-          )),
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(), // 禁止左右滑动
@@ -95,7 +71,7 @@ class _MainPageState extends State<MainPage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // 固定每个选项的宽度和位置
-        // selectedFontSize: 14,
+        selectedFontSize: 12,
         showSelectedLabels: true, // 显示选中项的文本标签
         showUnselectedLabels: true, // 显示未选中项的文本标签
         backgroundColor: Colors.white, // 设置底部导航栏的背景色
