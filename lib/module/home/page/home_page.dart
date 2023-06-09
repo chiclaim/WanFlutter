@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wanflutter/library/utils/toast_utils.dart';
 import 'package:wanflutter/module/base/bean/article_bean.dart';
 import 'package:wanflutter/module/base/bean/paging_bean.dart';
 import 'package:wanflutter/module/home/api/home_api.dart';
@@ -48,12 +49,12 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   fetchHomeTop() async {
     final bannerResult = await _homeApi.requestBanner();
     if (!bannerResult.ok) {
-      // todo 提示错误
+      ToastUtils.show(msg: bannerResult.errorMsg ?? "");
       return;
     }
     final topResult = await _homeApi.requestTop();
     if (!topResult.ok) {
-      // todo 提示错误
+      ToastUtils.show(msg: bannerResult.errorMsg ?? "");
       return;
     }
     _homeTopBean = HomeTopBean.fromJson(topResult.data, bannerResult.data);
@@ -154,7 +155,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     return Container(
       color: Colors.white,
       margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: _buildTopItemContent(bean),
@@ -163,36 +164,42 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _buildTopRow(int index, String? title, String? link) {
-    return Container(
-        margin: const EdgeInsets.only(top: 10),
-        child: Row(
-          children: [
-            Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Center(
-                child: Text(
-                  "$index",
-                  style: const TextStyle(fontSize: 14, color: Colors.white),
-                ),
-              ),
-            ),
-            Expanded(
-                child: Container(
-                    margin: const EdgeInsets.only(left: 10),
+    return GestureDetector(
+        onTap: () {
+          if (link == null) return;
+          Navigator.pushNamed(context, "wan-flutter://article_detail_page",
+              arguments: {"url": link, "title": title});
+        },
+        child: Container(
+            padding: const EdgeInsets.all(5),
+            child: Row(
+              children: [
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
                     child: Text(
-                      title ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: const TextStyle(
-                          fontSize: 16, color: Color(0xFF3D3D3D)),
-                    )))
-          ],
-        ));
+                      "$index",
+                      style: const TextStyle(fontSize: 14, color: Colors.white),
+                    ),
+                  ),
+                ),
+                Expanded(
+                    child: Container(
+                        margin: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          title ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontSize: 16, color: Color(0xFF3D3D3D)),
+                        )))
+              ],
+            )));
   }
 
   List<Widget> _buildTopItemContent(HomeTopBean bean) {
