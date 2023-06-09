@@ -72,7 +72,7 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
               title: const Text('分享'),
               onTap: () {
                 Navigator.pop(context);
-                Share.share(url, subject: title ?? "");
+                Share.share("$title\n$url");
               },
             ),
             ListTile(
