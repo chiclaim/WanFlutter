@@ -7,15 +7,20 @@ class HttpClient {
   /// wanandroid.com open api
   static const _defaultBaseUrl = WanBaseUrl();
 
-  static Future<ResponseResult> request(RequestOption requestOption,
-      {BaseUrl baseUrl = _defaultBaseUrl}) async {
+  static Future<ResponseResult> request<T>(RequestOption requestOption,
+      {BaseUrl baseUrl = _defaultBaseUrl,
+      dynamic Function(dynamic data)? parseData}) async {
     int? statusCode = -1;
     final network = NetworkManager.obtainNetwork(baseUrl);
     try {
       final responseInfo = await network.request(requestOption);
       statusCode = responseInfo.statusCode;
       if (responseInfo.statusCode == 200) {
-        return await baseUrl.parseData(responseInfo.data);
+        // 解析业务数据
+        if (parseData != null && responseInfo.data!=null) {
+          responseInfo.data.data = parseData(responseInfo.data.data);
+        }
+        return responseInfo.data;
       }
     } on Exception catch (e) {
       return ResponseResult(

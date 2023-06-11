@@ -9,7 +9,7 @@ class ResponseResult {
   final String? errorMsg;
 
   /// 业务数据
-  final dynamic data;
+  dynamic data;
 
   ResponseResult({required this.ok, this.errorCode, this.errorMsg, this.data});
 }

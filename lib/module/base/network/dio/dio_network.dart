@@ -4,6 +4,7 @@ import 'package:wanflutter/library/network/exception.dart';
 import 'package:wanflutter/library/network/method.dart';
 import 'package:wanflutter/library/network/options.dart';
 import 'package:wanflutter/library/network/response.dart';
+import 'package:wanflutter/module/base/network/response_result.dart';
 
 ///
 /// 通用网络功能封装
@@ -13,17 +14,39 @@ class DioNetwork implements INetwork {
   static const int timeout = 15000;
 
   final String baseUrl;
+  final List<Interceptor>? interceptors;
 
-  DioNetwork({required this.baseUrl}) {
+  DioNetwork({required this.baseUrl, this.interceptors}) {
     _dio.options.baseUrl = baseUrl;
     _dio.options.sendTimeout = const Duration(milliseconds: timeout);
     _dio.options.receiveTimeout = const Duration(milliseconds: timeout);
     _dio.options.connectTimeout = const Duration(milliseconds: timeout);
+    if (interceptors?.isNotEmpty == true) {
+      _dio.interceptors.addAll(interceptors!);
+    }
+    // 解析服务端返回的数据
+    _dio.interceptors.add(InterceptorsWrapper(
+      onResponse: (e, handler) {
+        if (e.statusCode == 200) {
+          final responseData = e.data;
+          Map<String, dynamic> result = responseData;
+          final errorCode = result["errorCode"];
+          final errorMsg = result["errorMsg"];
+          final data = result["data"];
+          e.data = ResponseResult(
+              ok: errorCode == 0,
+              errorCode: (errorCode != null) ? errorCode.toString() : null,
+              errorMsg: errorMsg,
+              data: data);
+        }
+        handler.next(e);
+      },
+    ));
   }
 
   DioNetwork addLogInterceptor() {
     _dio.interceptors
-        .add(LogInterceptor(responseBody: false, requestBody: true));
+        .add(LogInterceptor(responseBody: true, requestBody: true));
     return this;
   }
 
@@ -43,7 +66,10 @@ class DioNetwork implements INetwork {
                 queryParameters: requestOption.queryParameters));
       case Method.post:
         return convertResponse<T>(
-            requestOption, await _dio.post(requestOption.path));
+            requestOption,
+            await _dio.post(requestOption.path,
+                data: requestOption.data,
+                queryParameters: requestOption.queryParameters));
       case Method.head:
         return convertResponse<T>(
             requestOption, await _dio.head(requestOption.path));
