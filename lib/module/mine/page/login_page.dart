@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wanflutter/widget/universal_widget.dart';
+import 'package:wanflutter/library/utils/string_utils.dart';
+import 'package:wanflutter/library/utils/toast_utils.dart';
+import 'package:wanflutter/module/mine/api/user_api.dart';
+import 'package:wanflutter/module/mine/bean/user_bean.dart';
+import 'package:wanflutter/widget/widget_factory.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +15,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageStatee extends State<LoginPage> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _obscureText = true;
 
   @override
@@ -21,8 +27,9 @@ class LoginPageStatee extends State<LoginPage> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.person_outline),
                 hintText: '用户名',
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
@@ -30,6 +37,7 @@ class LoginPageStatee extends State<LoginPage> {
             ),
             const SizedBox(height: 16.0),
             TextField(
+              controller: _passwordController,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.lock_outline),
                 hintText: '密码',
@@ -52,7 +60,7 @@ class LoginPageStatee extends State<LoginPage> {
                 height: 45,
                 child: ElevatedButton(
                   onPressed: () {
-                    // 处理登录逻辑
+                    requestLogin();
                   },
                   child: const Text('登录'),
                 )),
@@ -67,5 +75,21 @@ class LoginPageStatee extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void requestLogin() async {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+    if (StringUtils.isEmpty(username)) {
+      ToastUtils.show("用户名不能为空");
+      return;
+    }
+    if (StringUtils.isEmpty(password)) {
+      ToastUtils.show("用户名不能为空");
+      return;
+    }
+    final responseResult = await UserApi().login(username, password);
+    final User? user = responseResult.data;
+    print(user?.email);
   }
 }
