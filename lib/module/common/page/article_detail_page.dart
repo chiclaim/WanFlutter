@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:wanflutter/library/utils/launch_utils.dart';
 import 'package:wanflutter/library/utils/toast_utils.dart';
 import 'package:wanflutter/module/base/constants.dart';
+import 'package:wanflutter/widget/universal_widget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleDetailPage extends StatefulWidget {
@@ -27,29 +26,18 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
     url = arguments['url'];
     title = arguments['title'];
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
+      appBar: UniversalWidget.buildAppBar(context, actions: [
+        IconButton(
+          icon: const Icon(
+            Icons.more_horiz,
             color: titleColor,
-            tooltip: "返回",
-            icon: const Icon(Icons.arrow_back_ios_new),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        backgroundColor: mainColor,
-        elevation: 0.5,
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.more_horiz,
-              color: titleColor,
-            ),
-            tooltip: "更多",
-            onPressed: () {
-              showBottomSheet();
-            },
           ),
-        ],
-      ),
+          tooltip: "更多",
+          onPressed: () {
+            showBottomSheet();
+          },
+        ),
+      ]),
       body: WebView(
         javascriptMode: url.contains("weixin")
             ? JavascriptMode.unrestricted

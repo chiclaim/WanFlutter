@@ -2,7 +2,9 @@
 /// “我的” 页面
 ///
 import 'package:flutter/material.dart';
-import 'package:wanflutter/module/base/constants.dart';
+import 'package:wanflutter/module/common/router/router_config.dart';
+import 'package:wanflutter/module/common/router/router_utils.dart';
+import 'package:wanflutter/widget/universal_widget.dart';
 import 'package:wanflutter/widget/setting_item_widget.dart';
 
 class MinePage extends StatelessWidget {
@@ -11,54 +13,47 @@ class MinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: const Center(
-              child: Text(
-            '我的',
-            style: TextStyle(color: titleColor),
-          )),
-          backgroundColor: mainColor,
-          elevation: 0,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1.0),
-            child: Container(
-              color: const Color(0xFFF2F2F2),
-              height: 1.0,
-            ),
-          )),
+      appBar: UniversalWidget.buildAppBar(context, title: "我的", hasBack: false),
       body: Column(children: [
-        _buildUserWidget(),
+        _buildUserWidget(context),
         const SizedBox(height: 30),
         _buildSettingWidget(),
       ]),
     );
   }
 
-  Widget _buildUserWidget() {
+  Widget _buildUserWidget(BuildContext context) {
     return Container(
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 登录入口
-            Container(
-                padding: const EdgeInsets.only(
-                    left: 35, top: 20, right: 20, bottom: 20),
-                child: Row(
-                  children: const [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.grey,
-                      // backgroundImage: AssetImage('assets/avatar.png'),
-                    ),
-                    SizedBox(width: 25),
-                    Text(
-                      '登录/注册',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                )),
+            GestureDetector(
+                onTap: () {
+                  RouterUtils.pushPage(
+                    context,
+                    Routers.pageLogin.path,
+                  );
+                },
+                child: Container(
+                    padding: const EdgeInsets.only(
+                        left: 35, top: 20, right: 20, bottom: 20),
+                    child: Row(
+                      children: const [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.grey,
+                          // backgroundImage: AssetImage('assets/avatar.png'),
+                        ),
+                        SizedBox(width: 25),
+                        Text(
+                          '登录/注册',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ))),
             Row(
               children: [
                 Expanded(

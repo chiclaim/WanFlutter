@@ -4,6 +4,8 @@ import 'package:wanflutter/library/utils/toast_utils.dart';
 import 'package:wanflutter/module/base/bean/article_bean.dart';
 import 'package:wanflutter/module/base/bean/paging_bean.dart';
 import 'package:wanflutter/module/base/constants.dart';
+import 'package:wanflutter/module/common/router/router_config.dart';
+import 'package:wanflutter/module/common/router/router_utils.dart';
 import 'package:wanflutter/module/home/api/home_api.dart';
 import 'package:wanflutter/module/home/bean/home_banner_bean.dart';
 import 'package:wanflutter/module/home/bean/home_top_bean.dart';
@@ -134,54 +136,51 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
               height: 1.0,
             ),
           )),
-      body: Container(
-        color: const Color(0xFFF4F5F7),
-        child: ListView.builder(
-            controller: _scrollController,
-            itemCount: _list.length + 1,
-            itemBuilder: (context, index) {
-              // 底部
-              if (index == _list.length) {
-                // 所有数据加载完毕
-                if (index == _list.length && total == _list.length) {
-                  return const SizedBox(
-                    height: 50,
-                    width: double.infinity,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '~我是有底线的~',
-                        style: TextStyle(fontSize: 14),
-                      ),
+      body: ListView.builder(
+          controller: _scrollController,
+          itemCount: _list.length + 1,
+          itemBuilder: (context, index) {
+            // 底部
+            if (index == _list.length) {
+              // 所有数据加载完毕
+              if (index == _list.length && total == _list.length) {
+                return const SizedBox(
+                  height: 50,
+                  width: double.infinity,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '~我是有底线的~',
+                      style: TextStyle(fontSize: 14),
                     ),
-                  );
-                } else {
-                  return const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
+                  ),
+                );
               } else {
-                final bean = _list.elementAt(index);
-                if (bean is Article) {
-                  return GestureDetector(
-                      onTap: () {
-                        if (bean.link == null) return;
-                        Navigator.pushNamed(
-                            context, "wan-flutter://article_detail_page",
-                            arguments: {"url": bean.link, "title": bean.title});
-                      },
-                      child: _buildItem(bean));
-                } else if (bean is List<HomeBanner>) {
-                  return buildTopSlider(bean);
-                } else {
-                  return const Text("Unknown data");
-                }
+                return const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
               }
-            }),
-      ),
+            } else {
+              final bean = _list.elementAt(index);
+              if (bean is Article) {
+                return GestureDetector(
+                    onTap: () {
+                      if (bean.link == null) return;
+                      RouterUtils.pushPage(
+                          context, Routers.pageArticleDetail.path,
+                          arguments: {"url": bean.link, "title": bean.title});
+                    },
+                    child: _buildItem(bean));
+              } else if (bean is List<HomeBanner>) {
+                return buildTopSlider(bean);
+              } else {
+                return const Text("Unknown data");
+              }
+            }
+          }),
     );
   }
 

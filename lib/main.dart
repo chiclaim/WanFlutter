@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wanflutter/module/base/constants.dart';
-import 'package:wanflutter/module/common/page/article_detail_page.dart';
+import 'package:wanflutter/module/common/router/router_config.dart';
 import 'package:wanflutter/module/home/page/home_page.dart';
 import 'package:wanflutter/module/mine/page/mine_page.dart';
 import 'package:wanflutter/module/project/page/project_page.dart';
@@ -15,12 +15,17 @@ class WanApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const MainPage(),
-        "wan-flutter://article_detail_page": (context) =>
-            const ArticleDetailPage(),
-      },
+      initialRoute: Routers.pageEntry.path,
+      routes: Routers.routers,
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFF4F5F7),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+        ),
+        textTheme: const TextTheme(
+          bodyText2: TextStyle(fontSize: 16.0, color: Color(0xFF252933)),
+        ),
+      ),
     );
   }
 }
