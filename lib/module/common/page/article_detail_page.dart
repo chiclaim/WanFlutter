@@ -4,7 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:wanflutter/library/utils/launch_utils.dart';
 import 'package:wanflutter/library/utils/toast_utils.dart';
 import 'package:wanflutter/module/base/constants.dart';
-import 'package:wanflutter/widget/universal_widget.dart';
+import 'package:wanflutter/widget/widget_factory.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleDetailPage extends StatefulWidget {
@@ -76,7 +76,7 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
               title: const Text('复制链接'),
               onTap: () {
                 Clipboard.setData(ClipboardData(text: url));
-                ToastUtils.show(msg: "复制链接成功");
+                ToastUtils.show("复制链接成功");
                 Navigator.pop(context);
               },
             ),
@@ -86,7 +86,7 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
               onTap: () async {
                 Navigator.pop(context);
                 if (!await LaunchUtils.launchByBrowser(url)) {
-                  ToastUtils.show(msg: "浏览器打开失败");
+                  ToastUtils.show("浏览器打开失败");
                 }
               },
             ),

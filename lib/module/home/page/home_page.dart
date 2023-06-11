@@ -8,7 +8,6 @@ import 'package:wanflutter/module/common/router/router_config.dart';
 import 'package:wanflutter/module/common/router/router_utils.dart';
 import 'package:wanflutter/module/home/api/home_api.dart';
 import 'package:wanflutter/module/home/bean/home_banner_bean.dart';
-import 'package:wanflutter/module/home/bean/home_top_bean.dart';
 
 ///
 /// 首页
@@ -53,20 +52,13 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   fetchHomeTop() async {
     final bannerResult = await _homeApi.requestBanner();
     if (!bannerResult.ok) {
-      ToastUtils.show(msg: bannerResult.errorMsg ?? "");
+      ToastUtils.show(bannerResult.errorMsg ?? "");
       return;
     }
-    final bannerData = bannerResult.data;
+    final List<HomeBanner>? bannerData = bannerResult.data;
     if (bannerData != null && bannerData.isNotEmpty) {
-      _bannerList = HomeTopBean.fromJson(null, bannerResult.data).banners;
-      _list.insert(0, _bannerList!);
+      _list.insert(0, bannerData);
     }
-    // final topResult = await _homeApi.requestTop();
-    // if (!topResult.ok) {
-    // ToastUtils.show(msg: bannerResult.errorMsg ?? "");
-    // return;
-    // }
-    // _homeTopBean = HomeTopBean.fromJson(topResult.data, bannerResult.data);
     // 如果文章列表有数据则刷新
     if (_list.isNotEmpty) {
       setState(() {});
@@ -87,9 +79,9 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       if (_bannerList == null || _bannerList!.isEmpty) {
         fetchHomeTop();
       }
-      final paging = Paging.fromJson(result.data);
-      total = paging.total ?? -1;
-      final dataList = paging.datas;
+      final Paging? paging = result.data;
+      total = paging?.total ?? -1;
+      final dataList = paging?.datas;
       if (dataList != null) _list.addAll(dataList);
     } else {
       // 请求失败
@@ -184,18 +176,6 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Widget buildTopItem(HomeTopBean bean) {
-    return Container(
-      color: Colors.white,
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.all(5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _buildTopItemContent(bean),
-      ),
-    );
-  }
-
   Widget buildTopSlider(List<HomeBanner> banners) {
     return CarouselSlider(
       options: CarouselOptions(
@@ -261,18 +241,6 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
                         )))
               ],
             )));
-  }
-
-  List<Widget> _buildTopItemContent(HomeTopBean bean) {
-    List<Widget> list = [];
-    int index = 0;
-    bean.tops?.forEach((element) {
-      list.add(_buildTopRow(++index, element.title, element.link));
-    });
-    bean.banners?.forEach((element) {
-      list.add(_buildTopRow(++index, element.title, element.url));
-    });
-    return list;
   }
 
   List<Widget> _buildTags(Article article) {

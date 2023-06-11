@@ -4,8 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:wanflutter/module/common/router/router_config.dart';
 import 'package:wanflutter/module/common/router/router_utils.dart';
-import 'package:wanflutter/widget/universal_widget.dart';
 import 'package:wanflutter/widget/setting_item_widget.dart';
+import 'package:wanflutter/widget/widget_factory.dart';
 
 class MinePage extends StatelessWidget {
   const MinePage({super.key});
