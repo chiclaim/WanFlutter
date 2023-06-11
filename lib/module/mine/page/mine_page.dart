@@ -42,6 +42,7 @@ class MinePageState extends State<MinePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: UniversalWidget.buildAppBar(context, title: "我的", hasBack: false),
       body: Column(children: [
@@ -102,12 +103,17 @@ class MinePageState extends State<MinePage>
                           const Text('收藏', style: TextStyle(fontSize: 14))
                         ]))),
                 Expanded(
-                    child: Column(children: [
-                  Text(_user.getCoinCount().toString(),
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold)),
-                  const Text('积分', style: TextStyle(fontSize: 14))
-                ])),
+                    child: InkWell(
+                        onTap: () {
+                          RouterUtils.pushPage(
+                              context, Routers.pageCoinRecordList.path);
+                        },
+                        child: Column(children: [
+                          Text(_user.getCoinCount().toString(),
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                          const Text('积分', style: TextStyle(fontSize: 14))
+                        ]))),
                 Expanded(
                     child: Column(children: const [
                   Text("0",
