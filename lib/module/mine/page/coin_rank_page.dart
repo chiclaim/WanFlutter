@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:wanflutter/module/common/constants.dart';
-import 'package:wanflutter/module/common/router/router_config.dart';
-import 'package:wanflutter/module/common/router/router_utils.dart';
+import 'package:wanflutter/library/utils/string_utils.dart';
 import 'package:wanflutter/module/mine/api/user_api.dart';
-import 'package:wanflutter/module/mine/bean/coin_bean.dart';
-import 'package:wanflutter/module/mine/bean/paging_coin_bean.dart';
+import 'package:wanflutter/module/mine/bean/coin_rank_bean.dart';
+import 'package:wanflutter/module/mine/bean/paging_coin_rank_bean.dart';
 import 'package:wanflutter/widget/widget_factory.dart';
 
-/// 积分记录页面
-class CoinRecordPage extends StatefulWidget {
-  const CoinRecordPage({super.key});
+/// 积分排行榜页面
+class CoinRankPage extends StatefulWidget {
+  const CoinRankPage({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _CoinRecordPageState();
+    return _CoinRankPageState();
   }
 }
 
-class _CoinRecordPageState extends State<CoinRecordPage>
+class _CoinRankPageState extends State<CoinRankPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<CoinBean> _list = [];
+  final List<CoinRankBean> _list = [];
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
 
@@ -51,12 +49,12 @@ class _CoinRecordPageState extends State<CoinRecordPage>
       _isLoading = true;
     });
     final result =
-        await _userApi.requestCoinRecord(pageIndex, pageSize: pageSize);
+        await _userApi.requestCoinRank(pageIndex, pageSize: pageSize);
     if (result.ok) {
       if (pageIndex == 0) {
         _list.clear();
       }
-      final PagingCoin? paging = result.data;
+      final PagingCoinRank? paging = result.data;
       total = paging?.total ?? -1;
       final dataList = paging?.datas;
       if (dataList != null) _list.addAll(dataList);
@@ -81,18 +79,7 @@ class _CoinRecordPageState extends State<CoinRecordPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: UniversalWidget.buildAppBar(context, title: "积分记录", actions: [
-        IconButton(
-          icon: const Icon(
-            Icons.leaderboard,
-            color: titleColor,
-          ),
-          tooltip: "排行榜",
-          onPressed: () {
-            RouterUtils.pushPage(context, Routers.pageCoinRankList.path);
-          },
-        ),
-      ]),
+      appBar: UniversalWidget.buildAppBar(context, title: "积分排行榜"),
       body: ListView.builder(
           controller: _scrollController,
           itemCount: _list.length + 1,
@@ -122,11 +109,15 @@ class _CoinRecordPageState extends State<CoinRecordPage>
               }
             } else {
               final bean = _list.elementAt(index);
+              String? name = bean.nickname;
+              if (StringUtils.isEmpty(name)) {
+                name = bean.username;
+              }
               return Container(
                   margin: const EdgeInsets.only(top: 10),
                   padding: const EdgeInsets.all(20),
                   color: Colors.white,
-                  child: Text(bean.desc ?? ""));
+                  child: Text("$name ${bean.coinCount}"));
             }
           }),
     );

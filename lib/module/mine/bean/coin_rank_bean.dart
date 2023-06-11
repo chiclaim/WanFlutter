@@ -1,4 +1,4 @@
-class CoinBean {
+class CoinRankBean {
   int? coinCount;
   int? level;
   String? nickname;
@@ -6,7 +6,7 @@ class CoinBean {
   int? userId;
   String? username;
 
-  CoinBean(
+  CoinRankBean(
       {this.coinCount,
       this.level,
       this.nickname,
@@ -14,7 +14,7 @@ class CoinBean {
       this.userId,
       this.username});
 
-  CoinBean.fromJson(Map<String, dynamic> json) {
+  CoinRankBean.fromJson(Map<String, dynamic> json) {
     coinCount = json['coinCount'];
     level = json['level'];
     nickname = json['nickname'];
