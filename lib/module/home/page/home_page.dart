@@ -49,7 +49,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     }
   }
 
-  fetchHomeTop() async {
+  fetchBannerList() async {
     final bannerResult = await _homeApi.requestBanner();
     if (!bannerResult.ok) {
       ToastUtils.show(bannerResult.errorMsg ?? "");
@@ -57,6 +57,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     }
     final List<HomeBanner>? bannerData = bannerResult.data;
     if (bannerData != null && bannerData.isNotEmpty) {
+      _bannerList = bannerData;
       _list.insert(0, bannerData);
     }
     // 如果文章列表有数据则刷新
@@ -77,7 +78,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
         _list.clear();
       }
       if (_bannerList == null || _bannerList!.isEmpty) {
-        fetchHomeTop();
+        fetchBannerList();
       }
       final Paging? paging = result.data;
       total = paging?.total ?? -1;
