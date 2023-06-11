@@ -5,4 +5,8 @@ class RouterUtils {
       {Object? arguments}) {
     Navigator.pushNamed(context, router, arguments: arguments);
   }
+
+  static void closePage(BuildContext context) {
+    Navigator.pop(context);
+  }
 }

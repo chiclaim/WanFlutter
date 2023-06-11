@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wanflutter/main.dart';
-import 'package:wanflutter/module/common/page/article_detail_page.dart';
+import 'package:wanflutter/module/article/page/article_detail_page.dart';
 import 'package:wanflutter/module/mine/page/login_page.dart';
 
 class Router {

@@ -6,10 +6,11 @@ class NetworkManager {
   static final _baseUrlMaps = <String, INetwork>{};
 
   /// 从 Network 缓存中获取 Network 实例，如果不存在，则创建
-  static INetwork obtainNetwork(BaseUrl baseUrl) {
+  static Future<INetwork> obtainNetwork(BaseUrl baseUrl) async {
     var network = _baseUrlMaps[baseUrl.key()];
     if (network == null) {
-      network = DioNetwork(baseUrl: baseUrl.getBaseUrl()).addLogInterceptor();
+      network = (await DioNetwork.of(baseUrl: baseUrl.getBaseUrl()))
+          .addLogInterceptor();
       _baseUrlMaps[baseUrl.key()] = network;
     }
     return network;

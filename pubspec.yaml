@@ -37,6 +37,8 @@ dependencies:
   url_launcher: ^6.1.11
   share_plus: 7.0.2
   carousel_slider: ^4.2.1
+  dio_cookie_manager: ^2.0.0
+  path_provider: ^2.0.15
 
 
   # The following adds the Cupertino Icons font to your application.

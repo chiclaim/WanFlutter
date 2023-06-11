@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wanflutter/library/utils/string_utils.dart';
 import 'package:wanflutter/library/utils/toast_utils.dart';
+import 'package:wanflutter/module/common/router/router_utils.dart';
+import 'package:wanflutter/module/common/user/user_manager.dart';
 import 'package:wanflutter/module/mine/api/user_api.dart';
 import 'package:wanflutter/module/mine/bean/user_bean.dart';
 import 'package:wanflutter/widget/widget_factory.dart';
@@ -18,6 +20,13 @@ class LoginPageStatee extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscureText = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController.text = "yuzhiqiang400@163.com";
+    _passwordController.text = "qiangni123456";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +69,7 @@ class LoginPageStatee extends State<LoginPage> {
                 height: 45,
                 child: ElevatedButton(
                   onPressed: () {
-                    requestLogin();
+                    requestLogin(context);
                   },
                   child: const Text('登录'),
                 )),
@@ -77,7 +86,7 @@ class LoginPageStatee extends State<LoginPage> {
     );
   }
 
-  void requestLogin() async {
+  void requestLogin(BuildContext context) async {
     final username = _usernameController.text;
     final password = _passwordController.text;
     if (StringUtils.isEmpty(username)) {
@@ -90,6 +99,14 @@ class LoginPageStatee extends State<LoginPage> {
     }
     final responseResult = await UserApi().login(username, password);
     final User? user = responseResult.data;
-    print(user?.email);
+    if (user == null) {
+      ToastUtils.show("登录失败");
+    } else {
+      ToastUtils.show("登录成功");
+      UserManager.notifyOnChange(UserEvent.login, data: user);
+      setState(() {
+        RouterUtils.closePage(context);
+      });
+    }
   }
 }

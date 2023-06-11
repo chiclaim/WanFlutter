@@ -1,4 +1,11 @@
+// ignore_for_file: depend_on_referenced_packages
+
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:wanflutter/library/network/network.dart';
 import 'package:wanflutter/library/network/exception.dart';
 import 'package:wanflutter/library/network/method.dart';
@@ -11,21 +18,23 @@ import 'package:wanflutter/module/base/network/response_result.dart';
 ///
 class DioNetwork implements INetwork {
   final Dio _dio = Dio();
-  static const int timeout = 15000;
-
+  static const int _timeout = 15000;
   final String baseUrl;
-  final List<Interceptor>? interceptors;
 
-  DioNetwork({required this.baseUrl, this.interceptors}) {
-    _dio.options.baseUrl = baseUrl;
-    _dio.options.sendTimeout = const Duration(milliseconds: timeout);
-    _dio.options.receiveTimeout = const Duration(milliseconds: timeout);
-    _dio.options.connectTimeout = const Duration(milliseconds: timeout);
-    if (interceptors?.isNotEmpty == true) {
-      _dio.interceptors.addAll(interceptors!);
-    }
+  DioNetwork._({required this.baseUrl});
+
+  static Future<DioNetwork> of({required String baseUrl}) async {
+    DioNetwork network = DioNetwork._(baseUrl: baseUrl);
+    network._dio.options.baseUrl = baseUrl;
+    network._dio.options.sendTimeout = const Duration(milliseconds: _timeout);
+    network._dio.options.receiveTimeout = const Duration(milliseconds: _timeout);
+    network._dio.options.connectTimeout = const Duration(milliseconds: _timeout);
+    // cookie 处理（用于登录）
+    final cookieJar = await _prepareJar(); //CookieJar();
+    network._dio.interceptors.add(CookieManager(cookieJar));
+
     // 解析服务端返回的数据
-    _dio.interceptors.add(InterceptorsWrapper(
+    network._dio.interceptors.add(InterceptorsWrapper(
       onResponse: (e, handler) {
         if (e.statusCode == 200) {
           final responseData = e.data;
@@ -42,6 +51,16 @@ class DioNetwork implements INetwork {
         handler.next(e);
       },
     ));
+    return network;
+  }
+
+  static Future<PersistCookieJar> _prepareJar() async {
+    final Directory appDocDir = await getApplicationDocumentsDirectory();
+    final String appDocPath = appDocDir.path;
+    return PersistCookieJar(
+      ignoreExpires: true,
+      storage: FileStorage("$appDocPath/.cookies/"),
+    );
   }
 
   DioNetwork addLogInterceptor() {
