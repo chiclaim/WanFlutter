@@ -21,7 +21,7 @@ class UserVo {
   }
 
   String getShowName() {
-    final name = user?.username;
+    final name = user?.nickname;
     if (name == null) return "";
     return name;
   }

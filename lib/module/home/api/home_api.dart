@@ -1,5 +1,5 @@
 import 'package:wanflutter/library/network/options.dart';
-import 'package:wanflutter/module/base/bean/paging_bean.dart';
+import 'package:wanflutter/module/common/bean/paging_bean.dart';
 import 'package:wanflutter/module/base/network/http_client.dart';
 import 'package:wanflutter/module/base/network/response_result.dart';
 import 'package:wanflutter/module/home/bean/home_banner_bean.dart';

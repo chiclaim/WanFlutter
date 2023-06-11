@@ -90,12 +90,17 @@ class MinePageState extends State<MinePage>
             Row(
               children: [
                 Expanded(
-                    child: Column(children: [
-                  Text(_user.getCollectCount().toString(),
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold)),
-                  const Text('收藏', style: TextStyle(fontSize: 14))
-                ])),
+                    child: InkWell(
+                        onTap: () {
+                          RouterUtils.pushPage(
+                              context, Routers.pageCollectList.path);
+                        },
+                        child: Column(children: [
+                          Text(_user.getCollectCount().toString(),
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                          const Text('收藏', style: TextStyle(fontSize: 14))
+                        ]))),
                 Expanded(
                     child: Column(children: [
                   Text(_user.getCoinCount().toString(),

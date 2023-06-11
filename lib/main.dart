@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wanflutter/module/base/constants.dart';
+import 'package:wanflutter/module/common/constants.dart';
 import 'package:wanflutter/module/common/router/router_config.dart';
 import 'package:wanflutter/module/home/page/home_page.dart';
 import 'package:wanflutter/module/mine/page/mine_page.dart';

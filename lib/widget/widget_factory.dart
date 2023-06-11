@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wanflutter/module/base/constants.dart';
+import 'package:wanflutter/module/common/constants.dart';
 
 /// 通用组件
 class UniversalWidget {

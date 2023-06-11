@@ -2,9 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:wanflutter/library/utils/toast_utils.dart';
 import 'package:wanflutter/module/article/api/article_api.dart';
-import 'package:wanflutter/module/base/bean/article_bean.dart';
-import 'package:wanflutter/module/base/bean/paging_bean.dart';
-import 'package:wanflutter/module/base/constants.dart';
+import 'package:wanflutter/module/common/bean/article_bean.dart';
+import 'package:wanflutter/module/common/bean/paging_bean.dart';
+import 'package:wanflutter/module/common/constants.dart';
 import 'package:wanflutter/module/common/router/router_config.dart';
 import 'package:wanflutter/module/common/router/router_utils.dart';
 import 'package:wanflutter/module/home/api/home_api.dart';
@@ -95,7 +95,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   }
 
   void requestCollectArticle(Article article) async {
-    final result = await AricleApi().collectInnerArticle(article.id!);
+    final result = await ArticleApi().collectInnerArticle(article.id!);
     if (result.ok) {
       setState(() {
         article.collect = true;

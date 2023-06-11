@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:wanflutter/library/utils/launch_utils.dart';
 import 'package:wanflutter/library/utils/toast_utils.dart';
-import 'package:wanflutter/module/base/constants.dart';
+import 'package:wanflutter/module/common/constants.dart';
 import 'package:wanflutter/widget/widget_factory.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 

@@ -1,4 +1,4 @@
-import 'package:wanflutter/module/base/bean/article_bean.dart';
+import 'package:wanflutter/module/common/bean/article_bean.dart';
 
 class Paging {
   int? curPage;

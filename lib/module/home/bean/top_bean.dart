@@ -1,4 +1,4 @@
-import 'package:wanflutter/module/base/bean/tag_bean.dart';
+import 'package:wanflutter/module/common/bean/tag_bean.dart';
 
 class Top {
   bool? adminAdd;
