@@ -3,7 +3,7 @@ import 'package:wanflutter/library/utils/string_utils.dart';
 import 'package:wanflutter/module/mine/api/user_api.dart';
 import 'package:wanflutter/module/mine/bean/coin_rank_bean.dart';
 import 'package:wanflutter/module/mine/bean/paging_coin_rank_bean.dart';
-import 'package:wanflutter/widget/widget_factory.dart';
+import 'package:wanflutter/widget/universal_widget.dart';
 
 /// 积分排行榜页面
 class CoinRankPage extends StatefulWidget {

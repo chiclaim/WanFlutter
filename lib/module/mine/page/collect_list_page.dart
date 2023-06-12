@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:wanflutter/library/utils/string_utils.dart';
 import 'package:wanflutter/module/article/api/article_api.dart';
 import 'package:wanflutter/module/article/bean/collect_bean.dart';
 import 'package:wanflutter/module/article/bean/paging_collect_bean.dart';
 import 'package:wanflutter/module/common/router/router_config.dart';
 import 'package:wanflutter/module/common/router/router_utils.dart';
-import 'package:wanflutter/widget/widget_factory.dart';
+import 'package:wanflutter/widget/universal_widget.dart';
 
 // 我的收藏页面
 class CollectListPage extends StatefulWidget {
@@ -133,7 +134,7 @@ class _CollectListPageState extends State<CollectListPage>
         children: [
           // 标题
           Text(
-            article.title ?? "",
+            StringUtils.unescapeHtml(article.title ?? ""),
             style: const TextStyle(fontSize: 18, color: Color(0xFF3D3D3D)),
           ),
           // 作者和时间

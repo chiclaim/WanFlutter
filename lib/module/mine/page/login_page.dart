@@ -5,7 +5,7 @@ import 'package:wanflutter/module/common/router/router_utils.dart';
 import 'package:wanflutter/module/common/user/user_manager.dart';
 import 'package:wanflutter/module/mine/api/user_api.dart';
 import 'package:wanflutter/module/mine/bean/user_bean.dart';
-import 'package:wanflutter/widget/widget_factory.dart';
+import 'package:wanflutter/widget/universal_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

@@ -5,7 +5,7 @@ import 'package:wanflutter/module/common/router/router_utils.dart';
 import 'package:wanflutter/module/mine/api/user_api.dart';
 import 'package:wanflutter/module/mine/bean/coin_bean.dart';
 import 'package:wanflutter/module/mine/bean/paging_coin_bean.dart';
-import 'package:wanflutter/widget/widget_factory.dart';
+import 'package:wanflutter/widget/universal_widget.dart';
 
 /// 积分记录页面
 class CoinRecordPage extends StatefulWidget {

@@ -9,7 +9,7 @@ import 'package:wanflutter/module/common/user/user_manager.dart';
 import 'package:wanflutter/module/mine/bean/user_bean.dart';
 import 'package:wanflutter/module/mine/bean/user_vo.dart';
 import 'package:wanflutter/widget/setting_item_widget.dart';
-import 'package:wanflutter/widget/widget_factory.dart';
+import 'package:wanflutter/widget/universal_widget.dart';
 
 class MinePage extends StatefulWidget {
   const MinePage({super.key});

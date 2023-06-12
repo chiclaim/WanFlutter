@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:wanflutter/library/utils/string_utils.dart';
 import 'package:wanflutter/library/utils/toast_utils.dart';
 import 'package:wanflutter/module/article/api/article_api.dart';
 import 'package:wanflutter/module/common/bean/article_bean.dart';
@@ -255,7 +258,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            article.title ?? "",
+            StringUtils.unescapeHtml(article.title ?? ""),
             style: const TextStyle(fontSize: 18, color: Color(0xFF3D3D3D)),
           ),
           Container(
@@ -272,9 +275,9 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
                             child: Row(
                               children: [
                                 Text(
-                                  article.author?.isNotEmpty == true
+                                  StringUtils.isNotEmpty(article.author)
                                       ? article.author!
-                                      : "佚名",
+                                      : article.shareUser ?? "佚名",
                                   style: const TextStyle(
                                       fontSize: 14, color: Color(0xFF69686E)),
                                 ),
