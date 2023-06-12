@@ -10,6 +10,7 @@ class UniversalWidget {
       bool hasBack = true,
       Function? backFunction,
       String? backToolTip,
+      double titleDividerHeight = 1,
       List<Widget>? actions}) {
     return AppBar(
       leading: hasBack
@@ -31,10 +32,10 @@ class UniversalWidget {
       backgroundColor: backgroundColor ?? mainColor,
       elevation: 0,
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1.0),
+        preferredSize: Size.fromHeight(titleDividerHeight),
         child: Container(
           color: const Color(0xFFF2F2F2),
-          height: 1.0,
+          height: titleDividerHeight,
         ),
       ),
       actions: actions,

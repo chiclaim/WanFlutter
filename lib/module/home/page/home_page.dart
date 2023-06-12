@@ -282,7 +282,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
                                       fontSize: 14, color: Color(0xFF69686E)),
                                 ),
                                 const Text(
-                                  " | ",
+                                  "  |  ",
                                   style: TextStyle(
                                       fontSize: 14, color: Color(0xFFE9E9EB)),
                                 ),
