@@ -79,47 +79,102 @@ class _CoinRankPageState extends State<CoinRankPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: UniversalWidget.buildAppBar(context, title: "积分排行榜"),
-      body: ListView.builder(
-          controller: _scrollController,
-          itemCount: _list.length + 1,
-          itemBuilder: (context, index) {
-            // 底部
-            if (index == _list.length) {
-              // 所有数据加载完毕
-              if (index == _list.length && total == _list.length) {
-                return const SizedBox(
-                  height: 50,
-                  width: double.infinity,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '~我是有底线的~',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                );
-              } else {
-                return const Padding(
-                  padding: EdgeInsets.all(16.0),
+      appBar: UniversalWidget.buildAppBar(context,
+          title: "积分排行榜", titleDividerHeight: 0),
+      body: Column(children: [
+        Container(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Expanded(
                   child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-            } else {
-              final bean = _list.elementAt(index);
-              String? name = bean.nickname;
-              if (StringUtils.isEmpty(name)) {
-                name = bean.username;
-              }
-              return Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  padding: const EdgeInsets.all(20),
-                  color: Colors.white,
-                  child: Text("$name ${bean.coinCount}"));
-            }
-          }),
+                      child: Text("名次",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ))),
+                ),
+                Expanded(
+                  child: Center(
+                      child: Text("积分",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ))),
+                ),
+                Expanded(
+                  child: Center(
+                      child: Text("用户",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ))),
+                ),
+              ],
+            )),
+        Expanded(
+            child: ListView.builder(
+                controller: _scrollController,
+                itemCount: _list.length + 1,
+                itemBuilder: (context, index) {
+                  // 底部
+                  if (index == _list.length) {
+                    // 所有数据加载完毕
+                    if (index == _list.length && total == _list.length) {
+                      return const SizedBox(
+                        height: 50,
+                        width: double.infinity,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            '~我是有底线的~',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                  } else {
+                    final bean = _list.elementAt(index);
+                    String? name = bean.nickname;
+                    if (StringUtils.isEmpty(name)) {
+                      name = bean.username;
+                    }
+
+                    return Container(
+                        height: 50,
+                        color: Colors.white,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Center(
+                                  child: Text(
+                                "${bean.rank}",
+                                style: const TextStyle(fontSize: 14),
+                              )),
+                            ),
+                            Expanded(
+                              child: Center(
+                                  child: Text("${bean.coinCount}",
+                                      style: const TextStyle(fontSize: 14))),
+                            ),
+                            Expanded(
+                              child: Center(
+                                  child: Text(name ?? "",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(fontSize: 14))),
+                            ),
+                          ],
+                        ));
+                  }
+                }))
+      ]),
     );
   }
 }
