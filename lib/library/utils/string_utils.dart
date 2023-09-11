@@ -1,5 +1,5 @@
 class StringUtils {
-  static const escapes = {
+  static const _escapes = {
     "&quot;": '"',
     '&ldquo;': '“',
     '&rdquo;': '”',
@@ -23,7 +23,7 @@ class StringUtils {
 
   static String unescapeHtml(String str) {
     if (isEmpty(str)) return str;
-    escapes.forEach((key, value) {
+    _escapes.forEach((key, value) {
       str = str.replaceAll(key, value);
     });
     return str;
