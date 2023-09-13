@@ -59,7 +59,7 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       ToastUtils.show(bannerResult.errorMsg ?? "");
       return;
     }
-    final List<HomeBanner>? bannerData = bannerResult.data;
+    final bannerData = bannerResult.data;
     if (bannerData != null && bannerData.isNotEmpty) {
       _bannerList = bannerData;
       _list.insert(0, bannerData);
@@ -84,9 +84,9 @@ class HomeState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       if (_bannerList == null || _bannerList!.isEmpty) {
         fetchBannerList();
       }
-      final Paging? paging = result.data;
-      total = paging?.total ?? -1;
-      final dataList = paging?.datas;
+      final pagingArticleList = result.data;
+      total = pagingArticleList?.total ?? -1;
+      final dataList = pagingArticleList?.datas;
       if (dataList != null) _list.addAll(dataList);
     } else {
       // 请求失败

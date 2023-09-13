@@ -7,7 +7,7 @@ import 'package:wanflutter/module/home/bean/top_bean.dart';
 
 class HomeApi {
   // 请求文章列表
-  Future<ResponseResult> requestArticleList(int index,
+  Future<ResponseResult<Paging>> requestArticleList(int index,
       {int pageSize = 20}) async {
     return await HttpClient.request(
       RequestOption("/article/list/$index/json",
@@ -25,7 +25,7 @@ class HomeApi {
   }
 
   /// 请求Banner
-  Future<ResponseResult> requestBanner() async {
+  Future<ResponseResult<List<HomeBanner>>> requestBanner() async {
     return await HttpClient.request(
       RequestOption("/banner/json"),
       parseData: (data) =>

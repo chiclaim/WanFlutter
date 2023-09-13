@@ -8,8 +8,8 @@ import 'package:wanflutter/module/mine/bean/user_bean.dart';
 
 class UserApi {
   // 用户登录
-  Future<ResponseResult> login(String username, String password) async {
-    final ResponseResult data = await HttpClient.request(
+  Future<ResponseResult<User>> login(String username, String password) async {
+    final data = await HttpClient.request(
       RequestOption("/user/login",
           method: Method.post,
           queryParameters: {"username": username, "password": password}),
@@ -19,7 +19,7 @@ class UserApi {
   }
 
   /// 积分记录列表
-  Future<ResponseResult> requestCoinRecord(int index,
+  Future<ResponseResult<PagingCoin>> requestCoinRecord(int index,
       {int pageSize = 20}) async {
     return await HttpClient.get(
       "/lg/coin/list/$index/json",
@@ -28,7 +28,7 @@ class UserApi {
   }
 
   /// 积分排行榜列表
-  Future<ResponseResult> requestCoinRank(int index, {int pageSize = 20}) async {
+  Future<ResponseResult<PagingCoinRank>> requestCoinRank(int index, {int pageSize = 20}) async {
     return await HttpClient.get(
       "/coin/rank/$index/json",
       parseData: (data) => PagingCoinRank.fromJson(data),

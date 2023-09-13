@@ -11,7 +11,7 @@ class ArticleApi {
   }
 
   /// 收藏列表
-  Future<ResponseResult> requestCollectList(int index,
+  Future<ResponseResult<PagingCollect>> requestCollectList(int index,
       {int pageSize = 20}) async {
     return await HttpClient.get(
       "/lg/collect/list/$index/json",

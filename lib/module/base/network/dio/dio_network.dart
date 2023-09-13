@@ -111,7 +111,7 @@ class DioNetwork implements INetwork {
 
   ResponseInfo<T> convertResponse<T>(
       RequestOption requestOption, Response<T> response) {
-    return ResponseInfo(
+    return ResponseInfo<T>(
         data: response.data,
         requestOptions: requestOption,
         statusCode: response.statusCode,

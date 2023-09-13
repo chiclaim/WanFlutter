@@ -1,4 +1,4 @@
-class ResponseResult {
+class ResponseResult<T> {
   /// 业务请求是否成功
   final bool ok;
 
@@ -9,7 +9,15 @@ class ResponseResult {
   final String? errorMsg;
 
   /// 业务数据
-  dynamic data;
+  T? data;
 
   ResponseResult({required this.ok, this.errorCode, this.errorMsg, this.data});
+
+  factory ResponseResult.copy(ResponseResult source) {
+    return ResponseResult<T>(
+        ok: source.ok,
+        errorCode: source.errorCode,
+        errorMsg: source.errorMsg,
+        data: source.data);
+  }
 }
